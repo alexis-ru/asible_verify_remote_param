@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Transfer the script
+      ansible.builtin.copy:
+        src: /home/user/ansible/verify.sh
+        dest: /home/user
+        owner: root
+        group: root
+        mode: '0755'
+      become: yes
+
+    - name: Execute the script
+      ansible.builtin.script: verify.sh >> /home/user/$(hostname)_$(date "+%d%m%Y__%H%M%S")
+
+    - name: Copy data
+      ansible.builtin.shell: scp /home/user/$(hostname)_$(date "+%d%m%Y__%H*") root@192.168.1.74:/home/user
